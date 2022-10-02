@@ -1,6 +1,7 @@
 import { Typography } from "@mui/material";
 import { Box, Container } from "@mui/system";
 import { GetServerSideProps, NextPage } from "next";
+import { getSession } from "next-auth/react";
 
 const User: NextPage = ({ users }: any) => {
   return (
@@ -18,10 +19,21 @@ const User: NextPage = ({ users }: any) => {
 };
 
 // This function gets called at build time
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
   // Call an external API endpoint to get posts
+  const { res } = context;
+  const session = await getSession(context);
   const result = await fetch("https://jsonplaceholder.typicode.com/users");
   const users = await result.json();
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login?callbackUrl=https://localhost:3000/user",
+        permanent: false,
+      },
+    };
+  }
 
   res.setHeader(
     "Cache-Control",
@@ -32,6 +44,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   // will receive `posts` as a prop at build time
   return {
     props: {
+      session,
       users,
     },
   };

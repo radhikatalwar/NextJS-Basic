@@ -1,13 +1,11 @@
 import { useState } from "react";
-import { signIn, getCsrfToken, getSession } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { Formik, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
-import { unstable_getServerSession } from "next-auth/next";
-import { authOptions } from "../api/auth/[...nextauth]";
 
-export default function SignIn({ csrfToken, session }: any) {
+export default function SignIn({ session }: any) {
   const router = useRouter();
   const [error, setError] = useState<String | null>(null);
 
@@ -107,16 +105,11 @@ export default function SignIn({ csrfToken, session }: any) {
 
 // This is the recommended way for Next.js 9.3 or newer
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
-  const session = await getSession();
-  console.log("session,",session);
+  const session = await getSession(context);
+  console.log("session", session);
   return {
     props: {
-      csrfToken: await getCsrfToken(context),
-      session: await unstable_getServerSession(
-        context.req as any,
-        context.res as any,
-        authOptions as any
-      ),
+      session,
     },
   };
 };

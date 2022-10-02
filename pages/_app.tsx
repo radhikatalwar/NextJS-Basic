@@ -16,6 +16,7 @@ import { SessionProvider } from "next-auth/react";
 export default function MyApp(props: any) {
   const { Component, pageProps } = props;
 
+  console.log("pageProps",pageProps)
   return (
     // <CacheProvider value={emotionCache}>
     <>
@@ -39,14 +40,3 @@ export default function MyApp(props: any) {
     // </CacheProvider>
   );
 }
-
-// function Auth({ children }: any) {
-//   // if `{ required: true }` is supplied, `status` can only be "loading" or "authenticated"
-//   const { status } = useSession({ required: true });
-
-//   if (status === "loading") {
-//     return <div>Loading...</div>;
-//   }
-
-//   return children;
-// }

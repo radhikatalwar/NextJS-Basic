@@ -53,7 +53,9 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const session = await getSession(context);
   console.log("session,", session, session?.user?.accessToken);
   return {
-    props: {},
+    props: {
+      session,
+    },
   };
 };
 

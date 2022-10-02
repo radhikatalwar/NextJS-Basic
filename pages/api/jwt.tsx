@@ -1,5 +1,4 @@
 import { getToken } from "next-auth/jwt"
-
 import type { NextApiRequest, NextApiResponse } from "next"
 
 export default async function handler(
