@@ -6,6 +6,8 @@ import Link from "next/link";
 import Router from "next/router";
 import { useEffect } from "react";
 import styles from "../styles/Home.module.css";
+import { signOut, getSession } from "next-auth/react";
+import { GetServerSideProps } from "next";
 
 const Home: NextPage = (): JSX.Element => {
   const { data, status } = useSession();
@@ -27,19 +29,32 @@ const Home: NextPage = (): JSX.Element => {
           <Typography className={styles.title}>
             Welcome to The Project ,
           </Typography>
-          <Typography>{data?.user?.accessToken}</Typography>
+          <Typography style={{ wordBreak: "break-all" }}>
+            {"Access token : "}
+            {data?.user?.accessToken}
+          </Typography>
           <Link href="/blog">
             <Button>STATIC RENDERING</Button>
           </Link>
           <Link href="/user">
             <Button>SERVER SIDE RENDERING</Button>
           </Link>
+          <Button onClick={() => signOut()}>LOG OUT</Button>
         </Box>
       </Container>
     );
   }
 
   return <Container className={styles.container}></Container>;
+};
+
+// This is the recommended way for Next.js 9.3 or newer
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
+  const session = await getSession(context);
+  console.log("session,", session, session?.user?.accessToken);
+  return {
+    props: {},
+  };
 };
 
 export default Home;

@@ -45,12 +45,7 @@ export default function SignIn({ csrfToken, session }: any) {
             justify-center min-h-screen py-2 shadow-lg"
             >
               <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                {/* <input
-                  name="csrfToken"
-                  type="hidden"
-                  defaultValue={csrfToken}
-                /> */}
-                <>{console.log("session",session)}</>
+                <>{console.log("session", session)}</>
 
                 <div className="text-red-400 text-md text-center rounded p-2">
                   {error}
@@ -112,10 +107,12 @@ export default function SignIn({ csrfToken, session }: any) {
 
 // This is the recommended way for Next.js 9.3 or newer
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
+  const session = await getSession();
+  console.log("session,",session);
   return {
     props: {
       csrfToken: await getCsrfToken(context),
-      session : await unstable_getServerSession(
+      session: await unstable_getServerSession(
         context.req as any,
         context.res as any,
         authOptions as any
