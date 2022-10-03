@@ -1,7 +1,7 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   session: {
     jwt: true,
     maxAge: 30 * 24 * 60 * 60, // 30 days
@@ -23,7 +23,6 @@ export const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        const { email, password } = credentials;
         console.log("I am here");
 
         const res = await fetch(
@@ -67,13 +66,13 @@ export const authOptions = {
   callbacks: {
     async jwt({ token, user, account }) {
       console.log("jwt", user, token, account);
-        if (account && user) {
-          return {
-            ...token,
-            accessToken: user?.data?.token,
-            // refreshToken: user.refreshToken,
-          };
-        }
+      if (account && user) {
+        return {
+          ...token,
+          accessToken: user?.data?.token,
+          // refreshToken: user.refreshToken,
+        };
+      }
       return token;
     },
 

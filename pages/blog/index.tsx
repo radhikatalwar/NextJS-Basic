@@ -3,7 +3,11 @@ import { GetStaticProps, NextPage } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-const Blog: NextPage = ({ posts }: any) => {
+type CustomAppProps = NextPage & {
+  auth?: { role?: String; unauthorized?: String; loading?: NextPage };
+};
+
+const Blog: CustomAppProps = ({ posts }: any) => {
   return (
     <Container>
       <Image src={"/images/closeIconn.png"} width={"100px"} height={"100px"} />
@@ -47,4 +51,9 @@ export const getStaticProps: GetStaticProps = async () => {
   };
 };
 
+Blog.auth = {
+  role: "admin",
+  // loading: <AdminLoadingSkeleton />,
+  unauthorized: "/", // redirect to this url
+};
 export default Blog;

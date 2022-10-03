@@ -8,13 +8,25 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { CacheProvider, EmotionCache } from "@emotion/react";
 import theme from "../utils/theme";
 // import createEmotionCache from "../utils/createEmotionCache";
-import { SessionProvider } from "next-auth/react";
+import { SessionProvider, useSession } from "next-auth/react";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { NextComponentType } from "next";
 
 // Client-side cache, shared for the whole session of the user in the browser.
 // const clientSideEmotionCache = createEmotionCache();
 
-export default function MyApp(props: any) {
-  const { Component, pageProps } = props;
+//Add custom appProp type then use union to add it
+type CustomAppProps = AppProps & {
+  Component: NextComponentType & { auth?: boolean }; // add auth type
+  pageProps: any;
+};
+
+export default function MyApp({
+  Component,
+  pageProps: { session, ...pageProps },
+}: CustomAppProps) {
+  // const { Component, pageProps } = props;
 
   console.log("pageProps", pageProps);
   return (
@@ -36,11 +48,35 @@ export default function MyApp(props: any) {
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
           <Layout>
-            <Component {...pageProps} />
+            {Component.auth ? (
+              <Auth>
+                <Component {...pageProps} />
+              </Auth>
+            ) : (
+              <Component {...pageProps} />
+            )}
           </Layout>
         </ThemeProvider>
       </SessionProvider>
     </>
     // </CacheProvider>
   );
+}
+
+function Auth({ children }: any) {
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const isUser = !!session?.user;
+
+  useEffect(() => {
+    if (status === "loading") return; // Do nothing while loading
+    if (!isUser) router.push("/login"); //Redirect to login
+  }, [isUser, status]);
+
+  if (isUser) {
+    return children;
+  }
+  // Session is being fetched, or no user.
+  // If no user, useEffect() will redirect.
+  return <div>Loading...</div>;
 }
