@@ -16,7 +16,7 @@ import { SessionProvider } from "next-auth/react";
 export default function MyApp(props: any) {
   const { Component, pageProps } = props;
 
-  console.log("pageProps",pageProps)
+  console.log("pageProps", pageProps);
   return (
     // <CacheProvider value={emotionCache}>
     <>
@@ -27,7 +27,11 @@ export default function MyApp(props: any) {
         />
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
-      <SessionProvider session={pageProps.session}>
+      <SessionProvider
+        session={pageProps.session}
+        refetchInterval={5 * 60} // Re-fetch session every 5 minutes
+        refetchOnWindowFocus={true} // Re-fetches session when window is focused
+      >
         <ThemeProvider theme={theme}>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />

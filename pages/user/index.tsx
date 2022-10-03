@@ -26,14 +26,14 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const result = await fetch("https://jsonplaceholder.typicode.com/users");
   const users = await result.json();
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/login?callbackUrl=https://localhost:3000/user",
-        permanent: false,
-      },
-    };
-  }
+  // if (!session) {
+  //   return {
+  //     redirect: {
+  //       destination: "/login?callbackUrl=https://localhost:3000/user",
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
   res.setHeader(
     "Cache-Control",
