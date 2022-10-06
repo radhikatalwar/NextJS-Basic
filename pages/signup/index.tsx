@@ -69,11 +69,8 @@ export default function SignUp() {
                     <ErrorMessage name="name" />
                   </div>
                 </div>
-                <div className="mb-4">
-                  <label
-                    htmlFor="email"
-                    className="uppercase text-sm text-gray-600 font-bold"
-                  >
+                <div>
+                  <label htmlFor="email">
                     Email
                     <Field
                       name="email"
@@ -83,15 +80,12 @@ export default function SignUp() {
                     />
                   </label>
 
-                  <div className="text-red-600 text-sm">
+                  <div>
                     <ErrorMessage name="email" />
                   </div>
                 </div>
-                <div className="mb-6">
-                  <label
-                    htmlFor="password"
-                    className="uppercase text-sm text-gray-600 font-bold"
-                  >
+                <div>
+                  <label htmlFor="password">
                     password
                     <Field
                       name="password"
@@ -101,15 +95,12 @@ export default function SignUp() {
                     />
                   </label>
 
-                  <div className="text-red-600 text-sm">
+                  <div>
                     <ErrorMessage name="password" />
                   </div>
                 </div>
-                <div className="flex items-center justify-center">
-                  <button
-                    type="submit"
-                    className="bg-green-400 text-gray-100 p-3 rounded-lg w-full"
-                  >
+                <div>
+                  <button type="submit">
                     {formik.isSubmitting ? "Please wait..." : "Sign Up"}
                   </button>
                 </div>
