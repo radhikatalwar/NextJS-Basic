@@ -52,8 +52,9 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 Blog.auth = {
-  role: "developer",
+  role: "admin",
   // loading: <AdminLoadingSkeleton />,
   unauthorized: "/403", // redirect to this url
 };
+
 export default Blog;

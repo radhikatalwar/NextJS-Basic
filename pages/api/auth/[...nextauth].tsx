@@ -1,5 +1,6 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { ApiError } from "next/dist/server/api-utils";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -23,8 +24,6 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        console.log("I am here");
-
         const res = await fetch(
           "https://milliedevapi.appskeeper.in/api/admin/login",
           {
@@ -36,25 +35,23 @@ export const authOptions: NextAuthOptions = {
           }
         );
         const user = await res.json();
+        console.log("res", user, res);
+        if (user.statusCode === 400) {
+          throw new Error(
+            JSON.stringify({ error: user.message, status: false })
+          );
 
+          // throw new ApiError(user.message);
+          // return null;
+        }
+        // If no error and we have user data, return it
+        if (user.statusCode === 200 && user) {
+          return user;
+        }
         console.log("hELLO", user, "HELLO");
 
-        return user;
-        // if (
-        //   email !== "radhika.talwar@appinventiv.com" &&
-        //   password !== "superadmin"
-        // ) {
-        //   throw new Error("invalid credientials");
-        // } else {
-        //   return {
-        //     email: "radhika.talwar@appinventiv.com",
-        //     name: "Radhika Talwar",
-        //     password: "superadmin",
-        //     token: "djksdjkdjskfnsf",
-        //   };
-        // }
-
         // Return null if user data could not be retrieved
+        return null;
       },
     }),
     // ...add more providers here
@@ -81,10 +78,9 @@ export const authOptions: NextAuthOptions = {
       console.log("hyy", token);
 
       session.user.accessToken = token.accessToken;
-      // session.user.refreshToken = token.refreshToken;
-      // session.user.accessTokenExpires = token.accessTokenExpires;
+      session.user.role = token.role;
 
-      console.log("sessoin", session);
+      console.log("session", session);
       return session;
     },
   },

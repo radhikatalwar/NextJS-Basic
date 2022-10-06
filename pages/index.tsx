@@ -56,7 +56,7 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
 Home.auth = {
   role: "admin",
   // loading: <AdminLoadingSkeleton />,
-  unauthorized: "/", // redirect to this url
+  unauthorized: "/login", // redirect to this url
 };
 
 export default Home;

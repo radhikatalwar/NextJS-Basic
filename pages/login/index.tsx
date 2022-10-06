@@ -28,7 +28,7 @@ export default function SignIn({ session }: any) {
             callbackUrl: `${"/"}`,
           });
           if (res?.error) {
-            setError(res?.error);
+            setError(JSON.parse(res?.error).error);
           } else {
             setError(null);
           }

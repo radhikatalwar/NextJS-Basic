@@ -5,9 +5,7 @@ import Head from "next/head";
 import { AppProps } from "next/app";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import { CacheProvider, EmotionCache } from "@emotion/react";
 import theme from "../utils/theme";
-// import createEmotionCache from "../utils/createEmotionCache";
 import { SessionProvider, useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
@@ -31,16 +29,14 @@ export default function MyApp({
   Component,
   pageProps: { session, ...pageProps },
 }: CustomAppProps) {
-  // const { Component, pageProps } = props;
   const router = useRouter();
   console.log("pageProps", pageProps);
   useEffect(() => {
     if (Component?.auth?.role && Component?.auth?.role !== "admin")
-      router.push(Component?.auth?.unauthorized ?? "/"); 
+      router.push(Component?.auth?.unauthorized ?? "/");
   }, [Component]);
-
+  console.log("Component in App.js", Component.auth);
   return (
-    // <CacheProvider value={emotionCache}>
     <>
       <Head>
         <link
@@ -58,7 +54,7 @@ export default function MyApp({
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
           <Layout>
-            {Component.auth ? (
+            {Component?.auth ? (
               <Auth>
                 <Component {...pageProps} />
               </Auth>
@@ -69,7 +65,6 @@ export default function MyApp({
         </ThemeProvider>
       </SessionProvider>
     </>
-    // </CacheProvider>
   );
 }
 
@@ -77,10 +72,10 @@ function Auth({ children }: any) {
   const router = useRouter();
   const { data: session, status } = useSession();
   const isUser = !!session?.user;
-
+  console.log("User in App.js", isUser);
   useEffect(() => {
     if (status === "loading") return; // Do nothing while loading
-    if (!isUser) router.push("/login"); //Redirect to login
+    if (!isUser || session?.user?.role === "error") router.push("/login"); //Redirect to login
   }, [isUser, status]);
 
   if (isUser) {
