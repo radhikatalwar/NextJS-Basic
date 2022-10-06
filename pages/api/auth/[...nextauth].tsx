@@ -70,6 +70,7 @@ export const authOptions: NextAuthOptions = {
         return {
           ...token,
           accessToken: user?.data?.token,
+          role: "admin",
           // refreshToken: user.refreshToken,
         };
       }

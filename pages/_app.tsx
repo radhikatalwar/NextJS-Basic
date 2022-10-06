@@ -18,7 +18,12 @@ import { NextComponentType } from "next";
 
 //Add custom appProp type then use union to add it
 type CustomAppProps = AppProps & {
-  Component: NextComponentType & { auth?: boolean }; // add auth type
+  Component: NextComponentType & {
+    auth?: {
+      role?: String;
+      unauthorized?: URL;
+    };
+  }; // add auth type
   pageProps: any;
 };
 
@@ -27,8 +32,13 @@ export default function MyApp({
   pageProps: { session, ...pageProps },
 }: CustomAppProps) {
   // const { Component, pageProps } = props;
-
+  const router = useRouter();
   console.log("pageProps", pageProps);
+  useEffect(() => {
+    if (Component?.auth?.role && Component?.auth?.role !== "admin")
+      router.push(Component?.auth?.unauthorized ?? "/"); 
+  }, [Component]);
+
   return (
     // <CacheProvider value={emotionCache}>
     <>
