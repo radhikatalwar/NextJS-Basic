@@ -1,40 +1,31 @@
 import { useState } from "react";
-import { signIn, getSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { Formik, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
-import { GetServerSideProps } from "next";
 import { Box, Button, Container, Typography } from "@mui/material";
 
-export default function SignIn({ session }: any) {
+export default function SignUp() {
   const router = useRouter();
   const [error, setError] = useState<String | null>(null);
 
   return (
     <>
       <Formik
-        initialValues={{ email: "", password: "" }}
+        initialValues={{ email: "", password: "", name: "", username: "" }}
         validationSchema={Yup.object({
           email: Yup.string()
             .max(30, "Must be 30 characters or less")
             .email("Invalid email address")
             .required("Please enter your email"),
           password: Yup.string().required("Please enter your password"),
+          name: Yup.string().required("Please enter your name"),
+          username: Yup.string().required("Please enter your username"),
         })}
         onSubmit={async (values, { setSubmitting }) => {
-          const res = await signIn("credentials", {
-            redirect: false,
-            email: values.email,
-            password: values.password,
-            callbackUrl: `${"/"}`,
-          });
-          if (res?.error) {
-            setError(JSON.parse(res?.error).error);
-          } else {
-            setError(null);
-          }
-          if (res?.url) router.push(res.url);
-          setSubmitting(false);
+          console.log(values);
+          const res = "Sign in Api CALL";
+          router.push("/login");
         }}
       >
         {(formik) => (
@@ -51,6 +42,34 @@ export default function SignIn({ session }: any) {
               >
                 <Typography>{error}</Typography>
                 <div className="mb-4">
+                  <label htmlFor="username">
+                    Username
+                    <Field
+                      name="username"
+                      aria-label="enter your user name"
+                      aria-required="true"
+                      type="text"
+                    />
+                  </label>
+                  <div>
+                    <ErrorMessage name="username" />
+                  </div>
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="name">
+                    Name
+                    <Field
+                      name="name"
+                      aria-label="enter your name"
+                      aria-required="true"
+                      type="text"
+                    />
+                  </label>
+                  <div>
+                    <ErrorMessage name="name" />
+                  </div>
+                </div>
+                <div className="mb-4">
                   <label
                     htmlFor="email"
                     className="uppercase text-sm text-gray-600 font-bold"
@@ -61,7 +80,6 @@ export default function SignIn({ session }: any) {
                       aria-label="enter your email"
                       aria-required="true"
                       type="text"
-                      className="w-full bg-gray-300 text-gray-900 mt-2 p-3"
                     />
                   </label>
 
@@ -80,7 +98,6 @@ export default function SignIn({ session }: any) {
                       aria-label="enter your password"
                       aria-required="true"
                       type="password"
-                      className="w-full bg-gray-300 text-gray-900 mt-2 p-3"
                     />
                   </label>
 
@@ -93,12 +110,9 @@ export default function SignIn({ session }: any) {
                     type="submit"
                     className="bg-green-400 text-gray-100 p-3 rounded-lg w-full"
                   >
-                    {formik.isSubmitting ? "Please wait..." : "Sign In"}
+                    {formik.isSubmitting ? "Please wait..." : "Sign Up"}
                   </button>
                 </div>
-                <Button onClick={() => router.push("/signup")}>
-                  New User..Go to sign up
-                </Button>
               </Box>
             </Container>
           </form>
@@ -107,14 +121,3 @@ export default function SignIn({ session }: any) {
     </>
   );
 }
-
-// This is the recommended way for Next.js 9.3 or newer
-export const getServerSideProps: GetServerSideProps = async (context: any) => {
-  const session = await getSession(context);
-  console.log("session", session);
-  return {
-    props: {
-      session,
-    },
-  };
-};

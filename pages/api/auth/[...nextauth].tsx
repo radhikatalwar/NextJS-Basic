@@ -1,6 +1,5 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { ApiError } from "next/dist/server/api-utils";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -24,6 +23,10 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
+        // console.log(credentials,req,"authorize")
+        // if(credentials?.login){
+
+        // }
         const res = await fetch(
           "https://milliedevapi.appskeeper.in/api/admin/login",
           {
@@ -36,19 +39,14 @@ export const authOptions: NextAuthOptions = {
         );
         const user = await res.json();
         console.log("res", user, res);
-        if (user.statusCode === 400) {
-          throw new Error(
-            JSON.stringify({ error: user.message, status: false })
-          );
-
-          // throw new ApiError(user.message);
-          // return null;
+        if (user.statusCode !== 200) {
+          throw new Error(JSON.stringify({ error: user.message }));
         }
         // If no error and we have user data, return it
         if (user.statusCode === 200 && user) {
           return user;
         }
-        console.log("hELLO", user, "HELLO");
+        console.log("User in authorize", user);
 
         // Return null if user data could not be retrieved
         return null;
@@ -62,7 +60,7 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user, account }) {
-      console.log("jwt", user, token, account);
+      console.log("jwt values", user, token, account);
       if (account && user) {
         return {
           ...token,
@@ -75,7 +73,7 @@ export const authOptions: NextAuthOptions = {
     },
 
     async session({ session, token }) {
-      console.log("hyy", token);
+      console.log("token in session", token);
 
       session.user.accessToken = token.accessToken;
       session.user.role = token.role;
