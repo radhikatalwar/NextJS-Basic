@@ -11,9 +11,6 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { NextComponentType } from "next";
 
-// Client-side cache, shared for the whole session of the user in the browser.
-// const clientSideEmotionCache = createEmotionCache();
-
 //Add custom appProp type then use union to add it
 type CustomAppProps = AppProps & {
   Component: NextComponentType & {
